@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-expo-nativewind-app",
-    "slug": "my-expo-nativewind-app",
+    "name": "AI Photo Transformer",
+    "slug": "ai-photo-transformer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -38,7 +38,15 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you transform them with AI.",
+          "cameraPermission": "The app accesses your camera to let you take photos for AI transformation."
+        }
+      ],
+      "expo-media-library"
     ],
     "experiments": {
       "typedRoutes": true,

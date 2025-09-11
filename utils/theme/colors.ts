@@ -1,0 +1,51 @@
+export const Colors = {
+  light: {
+    background: '#f8f8f8',
+    surface: '#ffffff',
+    surfaceVariant: '#e8e8e8',
+    surfaceSecondary: '#f5f5f5',
+    primary: '#3b82f6',
+    primaryVariant: '#60a5fa',
+    secondary: '#8b5cf6',
+    accent: '#f59e0b',
+    text: '#1a1a1a',
+    textSecondary: '#6b7280',
+    textMuted: '#9ca3af',
+    border: '#e5e7eb',
+    borderLight: '#f3f4f6',
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    glass: {
+      background: 'rgba(255, 255, 255, 0.1)',
+      border: 'rgba(255, 255, 255, 0.2)',
+      shadow: 'rgba(0, 0, 0, 0.1)',
+    },
+  },
+  dark: {
+    background: '#1a1a1a',
+    surface: '#2a2a2a',
+    surfaceVariant: '#3a3a3a',
+    surfaceSecondary: '#252525',
+    primary: '#60a5fa',
+    primaryVariant: '#3b82f6',
+    secondary: '#a78bfa',
+    accent: '#fbbf24',
+    text: '#f8f8f8',
+    textSecondary: '#9ca3af',
+    textMuted: '#6b7280',
+    border: '#374151',
+    borderLight: '#4b5563',
+    success: '#34d399',
+    warning: '#fbbf24',
+    error: '#f87171',
+    glass: {
+      background: 'rgba(255, 255, 255, 0.05)',
+      border: 'rgba(255, 255, 255, 0.1)',
+      shadow: 'rgba(0, 0, 0, 0.3)',
+    },
+  },
+} as const;
+
+export type Theme = 'light' | 'dark';
+export type ColorScheme = typeof Colors.light;
