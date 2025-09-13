@@ -1,53 +1,49 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
-  withSequence,
-  withDelay,
-} from 'react-native-reanimated';
-import { GlassCard } from '@/components/ui/glass-card';
 import { GlassButton } from '@/components/ui/glass-button';
-import { GradientBackground } from '@/components/ui/gradient-background';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Colors } from '@/utils/theme/colors';
+import { router } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
-  const colorScheme = useColorScheme();
-  const colors = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  
   // Animation values
   const logoScale = useSharedValue(0);
-  const logoRotation = useSharedValue(0);
+  const logoFloat = useSharedValue(0);
   const titleOpacity = useSharedValue(0);
-  const subtitleOpacity = useSharedValue(0);
+  const descriptionOpacity = useSharedValue(0);
   const buttonOpacity = useSharedValue(0);
-  const cardOpacity = useSharedValue(0);
 
   useEffect(() => {
     // Sequence of animations
     logoScale.value = withSpring(1, { damping: 15, stiffness: 200 });
-    logoRotation.value = withSequence(
-      withTiming(360, { duration: 1000 }),
-      withTiming(0, { duration: 0 })
+    logoFloat.value = withRepeat(
+      withSequence(
+        withTiming(-10, { duration: 2000 }),
+        withTiming(10, { duration: 2000 })
+      ),
+      -1,
+      true
     );
     
     titleOpacity.value = withDelay(500, withTiming(1, { duration: 800 }));
-    subtitleOpacity.value = withDelay(800, withTiming(1, { duration: 800 }));
-    cardOpacity.value = withDelay(1100, withTiming(1, { duration: 600 }));
-    buttonOpacity.value = withDelay(1400, withTiming(1, { duration: 600 }));
+    descriptionOpacity.value = withDelay(800, withTiming(1, { duration: 800 }));
+    buttonOpacity.value = withDelay(1200, withTiming(1, { duration: 600 }));
   }, []);
 
   const logoAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
       { scale: logoScale.value },
-      { rotateZ: `${logoRotation.value}deg` }
+      { translateY: logoFloat.value }
     ],
   }));
 
@@ -56,14 +52,9 @@ export default function WelcomeScreen() {
     transform: [{ translateY: titleOpacity.value === 0 ? 20 : 0 }],
   }));
 
-  const subtitleAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: subtitleOpacity.value,
-    transform: [{ translateY: subtitleOpacity.value === 0 ? 20 : 0 }],
-  }));
-
-  const cardAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: cardOpacity.value,
-    transform: [{ translateY: cardOpacity.value === 0 ? 30 : 0 }],
+  const descriptionAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: descriptionOpacity.value,
+    transform: [{ translateY: descriptionOpacity.value === 0 ? 20 : 0 }],
   }));
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -76,171 +67,110 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <GradientBackground variant="primary">
-      <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Logo Section */}
-          <View style={styles.logoSection}>
+          {/* Center Content */}
+          <View style={styles.centerContent}>
+            {/* App Name */}
+            <Animated.Text style={[styles.appName, titleAnimatedStyle]}>
+              Figure
+            </Animated.Text>
+            
+            {/* Logo with Animation */}
             <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-              <View style={[styles.logo, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.logoText, { color: colors.surface }]}>
-                  AI
-                </Text>
+              <View style={styles.logo}>
+                <Text style={styles.logoText}>📸</Text>
               </View>
             </Animated.View>
             
-            <Animated.Text 
-              style={[styles.appName, { color: colors.text }, titleAnimatedStyle]}
-            >
-              Photo Transformer
-            </Animated.Text>
-            
-            <Animated.Text 
-              style={[styles.tagline, { color: colors.textSecondary }, subtitleAnimatedStyle]}
-            >
-              Transform your photos with the power of AI
+            {/* Description */}
+            <Animated.Text style={[styles.description, descriptionAnimatedStyle]}>
+              Your photos, redefined by AI.{"\n"}Unleash your creativity.
             </Animated.Text>
           </View>
 
-          {/* Welcome Card */}
-          <Animated.View style={[cardAnimatedStyle, { flex: 1 }]}>
-            <GlassCard 
-              variant="elevated" 
-              style={styles.welcomeCard}
-            >
-              <Text style={[styles.welcomeTitle, { color: colors.text }]}>
-                Welcome to the Future
-              </Text>
-              <Text style={[styles.welcomeDescription, { color: colors.textSecondary }]}>
-                Discover the magic of AI-powered photo transformation. 
-                Turn your ordinary photos into extraordinary art pieces 
-                with just one tap.
-              </Text>
-              
-              <View style={styles.features}>
-                <FeatureItem 
-                  icon="🎨" 
-                  text="Ancient & Renaissance Art" 
-                  textColor={colors.text}
-                />
-                <FeatureItem 
-                  icon="🎭" 
-                  text="Plastic Action Figures" 
-                  textColor={colors.text}
-                />
-                <FeatureItem 
-                  icon="🌸" 
-                  text="Lofi Aesthetic Vibes" 
-                  textColor={colors.text}
-                />
-              </View>
-            </GlassCard>
-          </Animated.View>
-
-          {/* Continue Button */}
+          {/* Next Button */}
           <Animated.View style={[styles.buttonContainer, buttonAnimatedStyle]}>
             <GlassButton
-              title="Get Started"
+              title="Next"
               variant="primary"
-              size="lg"
-              fullWidth
+              size="md"
               onPress={handleContinue}
+              style={styles.nextButton}
+              textStyle={styles.nextButtonText}
             />
           </Animated.View>
         </View>
       </SafeAreaView>
-    </GradientBackground>
-  );
-}
-
-function FeatureItem({ icon, text, textColor }: { icon: string; text: string; textColor: string }) {
-  return (
-    <View style={styles.featureItem}>
-      <Text style={styles.featureIcon}>{icon}</Text>
-      <Text style={[styles.featureText, { color: textColor }]}>{text}</Text>
     </View>
   );
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#121418',
+  },
+  safeArea: {
     flex: 1,
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingBottom: 32,
   },
-  logoSection: {
-    alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 40,
-  },
-  logoContainer: {
-    marginBottom: 24,
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 24,
-    alignItems: 'center',
+  centerContent: {
+    flex: 1,
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  logoText: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    alignItems: 'center',
+    gap: 40,
   },
   appName: {
-    fontSize: 32,
+    fontSize: 48,
     fontWeight: 'bold',
-    marginBottom: 8,
+    color: '#FFFFFF',
     textAlign: 'center',
   },
-  tagline: {
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  welcomeCard: {
-    padding: 32,
-    margin: 16,
-  },
-  welcomeTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  welcomeDescription: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  features: {
-    gap: 16,
-  },
-  featureItem: {
-    flexDirection: 'row',
+  logoContainer: {
     alignItems: 'center',
-    paddingVertical: 8,
+    justifyContent: 'center',
   },
-  featureIcon: {
-    fontSize: 24,
-    marginRight: 16,
-    width: 32,
+  logo: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  logoText: {
+    fontSize: 48,
+  },
+  description: {
+    fontSize: 18,
+    color: '#FFFFFF',
     textAlign: 'center',
-  },
-  featureText: {
-    fontSize: 16,
-    fontWeight: '500',
-    flex: 1,
+    lineHeight: 26,
   },
   buttonContainer: {
-    paddingTop: 24,
+    position: 'absolute',
+    bottom: 50,
+    right: 24,
+  },
+  nextButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    backdropFilter: 'blur(20px)',
+  },
+  nextButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
 });

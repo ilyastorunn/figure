@@ -1,21 +1,21 @@
-import React from 'react';
-import { 
-  TouchableOpacity, 
-  TouchableOpacityProps, 
-  Text, 
-  ViewStyle, 
-  TextStyle 
-} from 'react-native';
-import { BlurView } from 'expo-blur';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withSpring,
-  runOnJS,
-} from 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Glassmorphism, FontSizes } from '@/utils/theme/glassmorphism';
 import { Colors } from '@/utils/theme/colors';
+import { FontSizes, Glassmorphism } from '@/utils/theme/glassmorphism';
+import { BlurView } from 'expo-blur';
+import React from 'react';
+import {
+    Text,
+    TextStyle,
+    TouchableOpacity,
+    TouchableOpacityProps,
+    ViewStyle
+} from 'react-native';
+import Animated, {
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated';
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -163,26 +163,32 @@ export function GlassButton({
   }
 
   return (
-    <AnimatedTouchableOpacity
-      style={[{ borderRadius: 24 }, animatedStyle, style]}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={handlePress}
-      disabled={disabled || loading}
-      activeOpacity={1}
-      {...props}
+    <BlurView
+      intensity={40}
+      tint={isDark ? 'dark' : 'light'}
+      style={[buttonStyle, animatedStyle, style]}
     >
-      <BlurView
-        intensity={40}
-        tint={isDark ? 'dark' : 'light'}
-        style={buttonStyle}
+      <AnimatedTouchableOpacity
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+        }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        disabled={disabled || loading}
+        activeOpacity={0.8}
+        {...props}
       >
         {leftIcon}
         <Text style={textStyles}>
           {loading ? 'Loading...' : title}
         </Text>
         {rightIcon}
-      </BlurView>
-    </AnimatedTouchableOpacity>
+      </AnimatedTouchableOpacity>
+    </BlurView>
   );
 }

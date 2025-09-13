@@ -1,50 +1,37 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withDelay,
-} from 'react-native-reanimated';
-import { GlassCard } from '@/components/ui/glass-card';
 import { GlassButton } from '@/components/ui/glass-button';
-import { GradientBackground } from '@/components/ui/gradient-background';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Colors } from '@/utils/theme/colors';
+import { router } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
 export default function Features1Screen() {
-  const colorScheme = useColorScheme();
-  const colors = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  
   // Animation values
-  const headerOpacity = useSharedValue(0);
-  const cardOpacity = useSharedValue(0);
-  const imageScale = useSharedValue(0.8);
+  const titleOpacity = useSharedValue(0);
+  const cardsOpacity = useSharedValue(0);
   const buttonOpacity = useSharedValue(0);
 
   useEffect(() => {
-    headerOpacity.value = withTiming(1, { duration: 600 });
-    cardOpacity.value = withDelay(300, withTiming(1, { duration: 800 }));
-    imageScale.value = withDelay(600, withTiming(1, { duration: 600 }));
-    buttonOpacity.value = withDelay(900, withTiming(1, { duration: 600 }));
+    titleOpacity.value = withTiming(1, { duration: 600 });
+    cardsOpacity.value = withDelay(300, withTiming(1, { duration: 800 }));
+    buttonOpacity.value = withDelay(600, withTiming(1, { duration: 600 }));
   }, []);
 
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: headerOpacity.value,
-    transform: [{ translateY: headerOpacity.value === 0 ? 20 : 0 }],
+  const titleAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: titleOpacity.value,
+    transform: [{ translateY: titleOpacity.value === 0 ? 20 : 0 }],
   }));
 
-  const cardAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: cardOpacity.value,
-    transform: [{ translateY: cardOpacity.value === 0 ? 30 : 0 }],
-  }));
-
-  const imageAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: imageScale.value }],
+  const cardsAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: cardsOpacity.value,
+    transform: [{ translateY: cardsOpacity.value === 0 ? 30 : 0 }],
   }));
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -53,84 +40,51 @@ export default function Features1Screen() {
   }));
 
   const handleNext = () => {
-    router.push('/(onboarding)/features-2');
-  };
-
-  const handleSkip = () => {
     router.push('/(onboarding)/get-started');
   };
 
+  const handleSkip = () => {
+    router.replace('/(tabs)');
+  };
+
   return (
-    <GradientBackground variant="secondary">
-      <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
-          {/* Header */}
-          <Animated.View style={[styles.header, headerAnimatedStyle]}>
-            <Text style={[styles.stepIndicator, { color: colors.textSecondary }]}>
-              1 of 3
-            </Text>
-            <Text style={[styles.title, { color: colors.text }]}>
-              Transform into Art
-            </Text>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Turn your photos into classical masterpieces
+          {/* Title */}
+          <Animated.View style={[styles.titleContainer, titleAnimatedStyle]}>
+            <Text style={styles.title}>
+              Discover your favorite style
             </Text>
           </Animated.View>
 
-          {/* Feature Card */}
-          <Animated.View style={[styles.cardContainer, cardAnimatedStyle]}>
-            <GlassCard variant="elevated" style={styles.featureCard}>
-              {/* Demo Image Placeholder */}
-              <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
-                <View style={[styles.beforeImage, { backgroundColor: colors.surfaceVariant }]}>
-                  <Text style={[styles.imageLabel, { color: colors.text }]}>
-                    📸 Your Photo
-                  </Text>
-                </View>
-                
-                <View style={styles.arrowContainer}>
-                  <Text style={styles.arrow}>→</Text>
-                </View>
-                
-                <View style={[styles.afterImage, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.imageLabel, { color: colors.surface }]}>
-                    🎨 Renaissance Art
-                  </Text>
-                </View>
-              </Animated.View>
-
-              <View style={styles.featureContent}>
-                <Text style={[styles.featureTitle, { color: colors.text }]}>
-                  Ancient & Renaissance Style
-                </Text>
-                <Text style={[styles.featureDescription, { color: colors.textSecondary }]}>
-                  Our AI transforms your photos using techniques inspired by Leonardo da Vinci, 
-                  Michelangelo, and other Renaissance masters. Experience the magic of classical 
-                  art with modern technology.
-                </Text>
-                
-                <View style={styles.highlights}>
-                  <HighlightItem 
-                    icon="🎭" 
-                    text="Classical painting techniques" 
-                    textColor={colors.text}
-                  />
-                  <HighlightItem 
-                    icon="✨" 
-                    text="Oil painting textures & effects" 
-                    textColor={colors.text}
-                  />
-                  <HighlightItem 
-                    icon="🖼️" 
-                    text="Museum-quality results" 
-                    textColor={colors.text}
-                  />
-                </View>
-              </View>
-            </GlassCard>
+          {/* Cards Grid */}
+          <Animated.View style={[styles.cardsContainer, cardsAnimatedStyle]}>
+            <View style={styles.grid}>
+              <StyleCard
+                title="Photo to Figure"
+                emoji="🎭"
+                bgColor="#4A90E2"
+              />
+              <StyleCard
+                title="Photo to Action Toy"
+                emoji="🤖"
+                bgColor="#F5A623"
+              />
+              <StyleCard
+                title="Photo to Lofi"
+                emoji="🌸"
+                bgColor="#D0021B"
+              />
+              <StyleCard
+                title="Photo to Renaissance Art"
+                emoji="🎨"
+                bgColor="#7ED321"
+              />
+            </View>
           </Animated.View>
 
-          {/* Navigation */}
+          {/* Navigation Buttons */}
           <Animated.View style={[styles.navigation, buttonAnimatedStyle]}>
             <GlassButton
               title="Skip"
@@ -138,6 +92,7 @@ export default function Features1Screen() {
               size="md"
               onPress={handleSkip}
               style={styles.skipButton}
+              textStyle={styles.skipButtonText}
             />
             <GlassButton
               title="Next"
@@ -145,19 +100,20 @@ export default function Features1Screen() {
               size="md"
               onPress={handleNext}
               style={styles.nextButton}
+              textStyle={styles.nextButtonText}
             />
           </Animated.View>
         </View>
       </SafeAreaView>
-    </GradientBackground>
+    </View>
   );
 }
 
-function HighlightItem({ icon, text, textColor }: { icon: string; text: string; textColor: string }) {
+function StyleCard({ title, emoji, bgColor }: { title: string; emoji: string; bgColor: string }) {
   return (
-    <View style={styles.highlightItem}>
-      <Text style={styles.highlightIcon}>{icon}</Text>
-      <Text style={[styles.highlightText, { color: textColor }]}>{text}</Text>
+    <View style={[styles.card, { backgroundColor: bgColor }]}>
+      <Text style={styles.cardEmoji}>{emoji}</Text>
+      <Text style={styles.cardTitle}>{title}</Text>
     </View>
   );
 }
@@ -165,118 +121,87 @@ function HighlightItem({ icon, text, textColor }: { icon: string; text: string; 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#121418',
+  },
+  safeArea: {
+    flex: 1,
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
   },
-  header: {
-    alignItems: 'center',
+  titleContainer: {
     paddingTop: 40,
-    paddingBottom: 32,
-  },
-  stepIndicator: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 8,
+    paddingBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 8,
+    color: '#FFFFFF',
     textAlign: 'center',
   },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  cardContainer: {
+  cardsContainer: {
     flex: 1,
+    justifyContent: 'center',
   },
-  featureCard: {
-    padding: 24,
-    marginHorizontal: 8,
-  },
-  imageContainer: {
+  grid: {
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 32,
+    gap: 16,
   },
-  beforeImage: {
-    width: (width - 120) / 3,
-    height: 100,
-    borderRadius: 12,
-    alignItems: 'center',
+  card: {
+    width: (width - 64) / 2,
+    height: 160,
+    borderRadius: 16,
+    padding: 20,
     justifyContent: 'center',
-  },
-  afterImage: {
-    width: (width - 120) / 3,
-    height: 100,
-    borderRadius: 12,
     alignItems: 'center',
-    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  arrowContainer: {
-    width: 40,
-    alignItems: 'center',
+  cardEmoji: {
+    fontSize: 32,
+    marginBottom: 12,
   },
-  arrow: {
-    fontSize: 24,
-    color: '#666',
-  },
-  imageLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  featureContent: {
-    alignItems: 'center',
-  },
-  featureTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  featureDescription: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  highlights: {
-    gap: 12,
-    width: '100%',
-  },
-  highlightItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  highlightIcon: {
-    fontSize: 20,
-    marginRight: 12,
-    width: 28,
-    textAlign: 'center',
-  },
-  highlightText: {
+  cardTitle: {
     fontSize: 14,
-    fontWeight: '500',
-    flex: 1,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    lineHeight: 18,
   },
   navigation: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 32,
-    paddingTop: 24,
+    paddingBottom: 50,
+    paddingTop: 40,
   },
   skipButton: {
-    flex: 0.4,
+    backgroundColor: 'rgba(64, 64, 64, 0.8)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    backdropFilter: 'blur(20px)',
+  },
+  skipButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
   nextButton: {
-    flex: 0.4,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    backdropFilter: 'blur(20px)',
+  },
+  nextButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
 });
